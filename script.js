@@ -37,10 +37,9 @@ var app = new Vue({
                 var versionChar = this.blueprintInput[0];
                 var decoded = atob(this.blueprintInput.slice(1));
                 var arrayBuffer = new Uint8Array(new ArrayBuffer(decoded.length));
-
-                decoded.forEach(function (_, i) {
+                for (var i = 0; i < decoded.length; i++) {
                     arrayBuffer[i] = decoded.charCodeAt(i);
-                });
+                }
                 var data = JSON.parse(pako.inflate(arrayBuffer, { to: "string" }));
                 data.blueprint.entities = data.blueprint.entities.map(function (entity) {
                     if (entity && entity.name) {
@@ -55,7 +54,7 @@ var app = new Vue({
                 this.blueprintOutput = versionChar + btoa(pako.deflate(JSON.stringify(data), { to: "string" }));
             } catch (e) {
                 console.error(e);
-                this.errorMessage = "Operation failed: " + e;
+                this.errorMessage = "Operation failed: " + e.message;
             }
         }
     }
