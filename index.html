@@ -18,8 +18,13 @@
                 <a href="https://github.com/alufers/factorio-blueprint-upgrader">GitHub</a>
             </p>
             <p>This little application will replace any objects in your blueprints.</p>
-            <textarea v-model="blueprintInput" placeholder="Paste your blueprint here"></textarea>
-            <button v-on:click="addRule">Add rule</button>
+            <textarea class="input-blueprint" v-model="blueprintInput" placeholder="Paste your blueprint here"></textarea>
+            <multiselect v-on:input="setPreset($event)" :options="presets" :reset-after="true" :CustomLabel="function() {return '';}" placeholder="Presets">
+                <template slot="option" scope="props">
+                    <img :src="'icons/' + props.option.img + '.png'" onerror="this.style.display='none'" /> {{ props.option.name }}
+                </template>
+            </multiselect>
+            
             <table>
                 <thead>
                     <tr>
@@ -50,14 +55,16 @@
                     </tr>
                 </tbody>
             </table>
+            <button v-on:click="addRule">Add rule</button>
 
-            <div></div>
+            <div style="height: 100px;"></div>
             <button v-on:click="upgrade">Upgrade</button>
             <div></div>
             {{ errorMessage }}
             <textarea v-model="blueprintOutput" placeholder="Output"></textarea>
             <p class="footer">
-                <a href="mailto:alufers@wp.pl">alufers</a> 2017 All item icons were extracted from the game and are not owned by me. Please don't sue me.
+                <a href="mailto:alufers@wp.pl">alufers</a> 2017 All item icons were extracted from the game and are not owned
+                by me. Please don't sue me.
             </p>
         </div>
     </div>
