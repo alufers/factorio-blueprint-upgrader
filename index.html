@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.0.0-beta.14/dist/vue-multiselect.min.css"></link>
+    <title>Blueprint Upgrader</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>Blueprint Upgrader</h1>
+            <p>
+                <a href="https://github.com/alufers/factorio-blueprint-upgrader">GitHub</a>
+            </p>
+            <p>This little application will replace any objects in your blueprints.</p>
+            <textarea v-model="blueprintInput" placeholder="Paste your blueprint here"></textarea>
+            <button v-on:click="addRule">Add rule</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="rule in rules">
+                        <td>
+                            <multiselect v-model="rule.from" :options="factorioEntities">
+                                <template slot="option" scope="props">
+                                    <img :src="'icons/' + props.option + '.png'" onerror="this.style.display='none'" /> {{ props.option }}
+                                </template>
+                            </multiselect>
+                        </td>
+                        <td>
+                            <multiselect v-model="rule.to" :options="factorioEntities">
+                                <template slot="option" scope="props">
+                                    <img :src="'icons/' + props.option + '.png'" onerror="this.style.display='none'" /> {{ props.option }}
+                                </template>
+                            </multiselect>
+                        </td>
+                        <td>
+                            <button v-on:click="removeRule(rule)">X</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div></div>
+            <button v-on:click="upgrade">Upgrade</button>
+            <div></div>
+            {{ errorMessage }}
+            <textarea v-model="blueprintOutput" placeholder="Output"></textarea>
+            <p class="footer">
+                <a href="mailto:alufers@wp.pl">alufers</a> 2017 All item icons were extracted from the game and are not owned by me. Please don't sue me.
+            </p>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.0.0-beta.14"></script>
+    <script src="https://unpkg.com/pako@1.0.5/dist/pako.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
