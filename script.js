@@ -147,7 +147,7 @@ var app = new Vue({
     },
     watch: {
         preset: function () {
-            console.log("dupa")
+            console.log("dupa");
             this.preset = null;
         }
     },
@@ -158,7 +158,7 @@ var app = new Vue({
                 to: null
             });
         },
-        setPreset(preset) {
+        setPreset: function(preset) {
             this.rules = deepCopy(preset.rules);
         },
         removeRule: function (rule) {
@@ -174,21 +174,39 @@ var app = new Vue({
                     arrayBuffer[i] = decoded.charCodeAt(i);
                 }
                 var data = JSON.parse(pako.inflate(arrayBuffer, { to: "string" }));
-                data.blueprint.entities = data.blueprint.entities.map(function (entity) {
-                    if (entity && entity.name) {
-                        this.rules.forEach(function (rule) {
-                            if (entity.name === rule.from) {
-                                entity.name = rule.to;
-                            }
-                        });
-                    }
-                    return entity;
-                }.bind(this));
+
+                if (data.blueprint_book) {
+                    data.blueprint_book.blueprints.forEach(function (blueprint) {
+                        this.upgradeBlueprint(blueprint.blueprint);
+                    }.bind(this));
+                } else {
+                    this.upgradeBlueprint(data.blueprint);
+                }
                 this.blueprintOutput = versionChar + btoa(pako.deflate(JSON.stringify(data), { to: "string" }));
             } catch (e) {
                 console.error(e);
                 this.errorMessage = "Operation failed: " + e.message;
             }
+        },
+        upgradeBlueprint: function(blueprint) {
+            blueprint.icons.forEach(function (icon) {
+                if (icon && icon.signal) {
+                    this.rules.forEach(function (rule) {
+                        if (icon.signal.name === rule.from) {
+                            icon.signal.name = rule.to;
+                        }
+                    });
+                }
+            }.bind(this));
+            blueprint.entities.forEach(function (entity) {
+                if (entity && entity.name) {
+                    this.rules.forEach(function (rule) {
+                        if (entity.name === rule.from) {
+                            entity.name = rule.to;
+                        }
+                    });
+                }
+            }.bind(this));
         }
     }
 });
