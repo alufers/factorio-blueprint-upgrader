@@ -18,7 +18,7 @@
                 <a href="https://github.com/alufers/factorio-blueprint-upgrader">GitHub</a>
             </p>
             <p>This little application will replace any objects in your blueprints.</p>
-            <textarea class="input-blueprint" v-model="blueprintInput" placeholder="Paste your blueprint here"></textarea>
+            <textarea class="input-blueprint" v-model="blueprintInput" v-on:input="load" placeholder="Paste your blueprint here"></textarea>
             <multiselect v-on:input="setPreset($event)" :options="presets" :reset-after="true" :custom-label="function() {return '';}" placeholder="Presets">
                 <template slot="option" scope="props">
                     <img :src="'icons/' + props.option.img + '.png'" onerror="this.style.display='none'" /> {{ props.option.name }}
@@ -57,8 +57,22 @@
             </table>
             <button v-on:click="addRule">Add rule</button>
 
-            <div style="height: 100px;"></div>
+            <div style="height: 50px;"></div>
+            <div v-if="loadedData && showLabels">
+                <div v-if="loadedData.blueprint_book">
+                    Book label: <input type="text" v-model="loadedData.blueprint_book.label" style="width: 300px"><br>
+                    <span v-for="{blueprint, index} in loadedData.blueprint_book.blueprints">
+                        Label {{ index + 1 }}: <input type="text" v-model="blueprint.label" style="width: 300px"><br>
+                    </span>
+                </div>
+                <div v-if="!loadedData.blueprint_book">
+                    Label: <input type="text" v-model="loadedData.blueprint.label" style="width: 300px"><br>
+                </div>
+            </div>
+            <div style="height: 50px;"></div>
             <button v-on:click="upgrade">Upgrade</button>
+            <input type="checkbox" v-model="upgradeIcons" value="true">Upgrade Icons
+            <input type="checkbox" v-model="showLabels" value="true">Show labels
             <div></div>
             {{ errorMessage }}
             <textarea v-model="blueprintOutput" placeholder="Output"></textarea>

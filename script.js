@@ -173,7 +173,11 @@ var app = new Vue({
         factorioEntities: factorioEntities,
         errorMessage: "",
         presets: presets,
-        preset: null
+        preset: null,
+        upgradeIcons: true,
+        showLabels: false,
+        loadedData: null,
+        versionChar: null
     },
     watch: {
         preset: function () {
@@ -194,40 +198,57 @@ var app = new Vue({
         removeRule: function (rule) {
             this.rules.splice(this.rules.indexOf(rule), 1);
         },
+        load : function () {
+            this.errorMessage = "";
+            if (this.blueprintInput) {
+                try {
+                    this.versionChar = this.blueprintInput[0];
+                    var decoded = atob(this.blueprintInput.slice(1));
+                    var arrayBuffer = new Uint8Array(new ArrayBuffer(decoded.length));
+                    for (var i = 0; i < decoded.length; i++) {
+                        arrayBuffer[i] = decoded.charCodeAt(i);
+                    }
+                    this.loadedData = JSON.parse(pako.inflate(arrayBuffer, { to: "string" }));
+                } catch (e) {
+                    console.error(e);
+                    this.errorMessage = "Operation failed: " + e.message;
+                }
+            } else {
+                this.loadedData = null;
+                this.versionChar = null;
+            }
+        },
         upgrade: function () {
             this.errorMessage = "";
-            try {
-                var versionChar = this.blueprintInput[0];
-                var decoded = atob(this.blueprintInput.slice(1));
-                var arrayBuffer = new Uint8Array(new ArrayBuffer(decoded.length));
-                for (var i = 0; i < decoded.length; i++) {
-                    arrayBuffer[i] = decoded.charCodeAt(i);
+            if (this.loadedData) {
+                try {
+                    if (this.loadedData.blueprint_book) {
+                        this.loadedData.blueprint_book.blueprints.forEach(function (blueprint) {
+                            this.upgradeBlueprint(blueprint.blueprint);
+                        }.bind(this));
+                    } else {
+                        this.upgradeBlueprint(this.loadedData.blueprint);
+                    }
+                    this.blueprintOutput = this.versionChar + btoa(pako.deflate(JSON.stringify(this.loadedData), { to: "string" }));
+                } catch (e) {
+                    console.error(e);
+                    this.errorMessage = "Operation failed: " + e.message;
                 }
-                var data = JSON.parse(pako.inflate(arrayBuffer, { to: "string" }));
-
-                if (data.blueprint_book) {
-                    data.blueprint_book.blueprints.forEach(function (blueprint) {
-                        this.upgradeBlueprint(blueprint.blueprint);
-                    }.bind(this));
-                } else {
-                    this.upgradeBlueprint(data.blueprint);
-                }
-                this.blueprintOutput = versionChar + btoa(pako.deflate(JSON.stringify(data), { to: "string" }));
-            } catch (e) {
-                console.error(e);
-                this.errorMessage = "Operation failed: " + e.message;
             }
         },
         upgradeBlueprint: function(blueprint) {
-            blueprint.icons.forEach(function (icon) {
-                if (icon && icon.signal) {
-                    this.rules.forEach(function (rule) {
-                        if (icon.signal.name === rule.from) {
-                            icon.signal.name = rule.to;
-                        }
-                    });
-                }
-            }.bind(this));
+            if (this.upgradeIcons) {
+                blueprint.icons.forEach(function (icon) {
+                    if (icon && icon.signal) {
+                        this.rules.forEach(function (rule) {
+                            if (icon.signal.name === rule.from) {
+                                icon.signal.name = rule.to;
+                            }
+                        });
+                    }
+                }.bind(this));
+            }
+
             blueprint.entities.forEach(function (entity) {
                 if (entity && entity.name) {
                     this.rules.forEach(function (rule) {
