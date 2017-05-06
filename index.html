@@ -59,6 +59,7 @@
 
             <div style="height: 100px;"></div>
             <button v-on:click="upgrade">Upgrade</button>
+            <input type="checkbox" v-model="upgradeIcons" value="true" checked>Upgrade Icons
             <div></div>
             {{ errorMessage }}
             <textarea v-model="blueprintOutput" placeholder="Output"></textarea>

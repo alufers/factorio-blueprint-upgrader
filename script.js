@@ -173,7 +173,8 @@ var app = new Vue({
         factorioEntities: factorioEntities,
         errorMessage: "",
         presets: presets,
-        preset: null
+        preset: null,
+        upgradeIcons: true
     },
     watch: {
         preset: function () {
@@ -219,15 +220,18 @@ var app = new Vue({
             }
         },
         upgradeBlueprint: function(blueprint) {
-            blueprint.icons.forEach(function (icon) {
-                if (icon && icon.signal) {
-                    this.rules.forEach(function (rule) {
-                        if (icon.signal.name === rule.from) {
-                            icon.signal.name = rule.to;
-                        }
-                    });
-                }
-            }.bind(this));
+            if (this.upgradeIcons) {
+                blueprint.icons.forEach(function (icon) {
+                    if (icon && icon.signal) {
+                        this.rules.forEach(function (rule) {
+                            if (icon.signal.name === rule.from) {
+                                icon.signal.name = rule.to;
+                            }
+                        });
+                    }
+                }.bind(this));
+            }
+
             blueprint.entities.forEach(function (entity) {
                 if (entity && entity.name) {
                     this.rules.forEach(function (rule) {
