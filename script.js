@@ -125,6 +125,36 @@ var presets = [
             { "from": "fast-underground-belt", "to": "express-underground-belt" },
             { "from": "fast-splitter", "to": "express-splitter" }
         ]
+    },
+    {
+        name: "Inserters to fast inserters",
+        img: "fast-inserter",
+        rules: [
+            { "from": "inserter", "to": "fast-inserter" }
+        ]
+    },
+    {
+        name: "Fast inserters to inserters",
+        img: "inserter",
+        rules: [
+            { "from": "fastinserter", "to": "inserter" }
+        ]
+    },
+    {
+        name: "Assembling machines to assembling machines 2",
+        img: "assembling-machine-2",
+        rules: [
+            { "from": "assembling-machine-1", "to": "assembling-machine-2" },
+            { "from": "assembling-machine-3", "to": "assembling-machine-2" }
+        ]
+    },
+    {
+        name: "Assembling machines to assembling machines 3",
+        img: "assembling-machine-3",
+        rules: [
+            { "from": "assembling-machine-1", "to": "assembling-machine-3" },
+            { "from": "assembling-machine-2", "to": "assembling-machine-3" }
+        ]
     }
 ];
 
