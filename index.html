@@ -17,8 +17,8 @@
             <p>
                 <a href="https://github.com/alufers/factorio-blueprint-upgrader">GitHub</a>
             </p>
-            <p>This little application will replace any objects in your blueprints.</p>
-            <textarea class="input-blueprint" v-model="blueprintInput" v-on:input="load" placeholder="Paste your blueprint here"></textarea>
+            <p>This little application will replace any objects in your blueprints. <b>Now with support for blueprint books!</b></p>
+            <textarea class="input-blueprint" v-model="blueprintInput" v-on:input="load" placeholder="Paste your blueprint or book here"></textarea>
             <multiselect v-on:input="setPreset($event)" :options="presets" :reset-after="true" :custom-label="function() {return '';}" placeholder="Presets">
                 <template slot="option" scope="props">
                     <img :src="'icons/' + props.option.img + '.png'" onerror="this.style.display='none'" /> {{ props.option.name }}
