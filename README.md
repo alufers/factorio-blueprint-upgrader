@@ -1,5 +1,4 @@
-# factorio-blueprint-upgrader
-Blueprint Upgrader
+# Blueprint Upgrader
 
 This little application will replace any objects in your blueprints or blueprint books.
 
